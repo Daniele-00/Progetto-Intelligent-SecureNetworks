@@ -34,6 +34,7 @@ class MyTopologia(Topo):
       h3 = self.addHost("h3", ip="192.168.0.22/24", defaultRoute="via 192.168.0.1")
       h4 = self.addHost("h4", ip="192.168.0.23/24", defaultRoute="via 192.168.0.1")
       h5 = self.addHost("h5", ip="192.168.0.24/24", defaultRoute="via 192.168.0.1")
+      #Creazione collegamento host-switch
       self.addLink(h3, switch2)
       self.addLink(h4, switch2)
       self.addLink(h5, switch1)
