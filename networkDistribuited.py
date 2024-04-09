@@ -20,7 +20,7 @@ class MyTopologia(Topo):
    def build(self, **_kwargs):
       r0 = self.addNode("r0", cls=Router) #aggiunta nodo router
       switch1 = self.addSwitch("s1")
-      #Aggiunta di 3 host e assegnazione ip nella prima rete con indirizzo 192.0.0.0/24
+      #Aggiunta di 3 host e assegnazione ip nella prima subnet con indirizzo 10.0.0.0/24
       h1 = self.addHost("h1", ip="10.0.0.10/24", defaultRoute="via 10.0.0.1")
       h2 = self.addHost("h2", ip="10.0.0.11/24", defaultRoute="via 10.0.0.1")
       h3 = self.addHost("h3", ip="10.0.0.12/24", defaultRoute="via 10.0.0.1")
@@ -29,15 +29,15 @@ class MyTopologia(Topo):
       self.addLink(h2, switch1)
       self.addLink(h3, switch1)
       
-      #Aggiunta di 3 host e assegnazione ip nella seconda rete con indirizzo 192.168.0.0/24
+      #Aggiunta di 3 host e assegnazione ip nella seconda subnet con indirizzo 192.168.0.0/24
       switch2 = self.addSwitch("s2")
-      h3 = self.addHost("h3", ip="192.168.0.13/24", defaultRoute="via 192.168.0.1")
-      h4 = self.addHost("h4", ip="192.168.0.14/24", defaultRoute="via 192.168.0.1")
-      h5 = self.addHost("h5", ip="192.168.0.15/24", defaultRoute="via 192.168.0.1")
+      h4 = self.addHost("h4", ip="192.168.0.13/24", defaultRoute="via 192.168.0.1")
+      h5 = self.addHost("h5", ip="192.168.0.14/24", defaultRoute="via 192.168.0.1")
+      h6 = self.addHost("h6", ip="192.168.0.15/24", defaultRoute="via 192.168.0.1")
       #Creazione collegamento host-switch
-      self.addLink(h3, switch2)
       self.addLink(h4, switch2)
-      self.addLink(h5, switch1)
+      self.addLink(h5, switch2)
+      self.addLink(h6, switch2)
 
       #Collegamento tra il router e i due switch attraverso interfaccia
       self.addLink(r0, switch1, intfName1="r0-eth1", params1={"ip": "10.0.0.1/24"})
