@@ -51,7 +51,7 @@ def run():
    _intf0 = Intf("enp0s3", node=router) #interfaccia enp0s3 configurata come router
    router.cmd('dhclient enp0s3') #assegna tramite dhcp indirizzo ip
    router.cmd("ifconfig r0-eth1 10.0.0.1 netmask 255.255.255.0") #configurazione ip per interfaccia r0-eth1
-   router.cmd("ifconfig 192.168.0.1 netmask 255.255.255.0") #configurazione ip per interfaccia r0-eth2
+   router.cmd("ifconfig r0-eth2 192.168.0.1 netmask 255.255.255.0") #configurazione ip per interfaccia r0-eth2
    router.cmd("iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE") #regola per il NAT
    
    CLI(net)

@@ -1,0 +1,92 @@
+Installazione ubuntu 22.04 p 20.04
+Se non funziona terminale cambiare lingua su English(Canada)
+Se non hai permessi di root eseguire: 
+1) su -u
+2)add "username" sudo
+3) su -u "username"
+
+(Macchina mininet)
+Installazione di mininet: 
+sudo apt-get update
+git clone https://github.com/mininet/mininet
+git checkout -b mininet-2.3.0 2.3.0  # or whatever version you wish to install
+mininet/util/install.sh -a
+
+N.B Se durante installazione di mininet si pianta (spesso su clone OpenFlow) cercare su internet comando che risolve problema github
+
+(Macchina del collettore)
+Installazione nProbe
+sudo apt-get install software-properties-common wget
+sudo add-apt-repository universe 
+wget https://packages.ntop.org/apt-stable/22.04/all/apt-ntop-stable.deb
+sudo apt install ./apt-ntop-stable.deb 
+sudo apt-get clean all apt-get update 
+sudo apt-get install pfring-dkms nprobe ntopng n2disk cento 
+
+(Macchina del collettore)
+Configurazione file nprobe.conf
+interfaccia: -i=enp0s9
+netflow collector: --zmq="tcp://127.0.0.1:5556"
+collector port: -3=2055
+--flow-version 9
+
+(Macchina del collettore) Opzionale
+Disabilitare avvio automatico nprobe
+sudo systemctl disable nprobe
+
+(Macchina del collettore)
+Avvio nProbe e controllo stato
+sudo systemctl start nprobe (Collector)
+sudo systemctl status nprobe
+
+(Macchina del collettore)
+Configurazione ntopng.conf
+--interface="tcp://127.0.0.1:5556"
+Avvio ntopng (Analyzer)
+sudo systemctl start ntopng
+
+(Macchina del collettore)
+Controllo su browser web a indirizzo http://127.0.0.1:3000
+
+(Macchina collettore)
+Configurare indirizzo ip statico VM_monitoring (192.168.1.2)
+network:
+  version: 2
+  ethernets:
+    enp0s8:
+      addresses:
+        - 192.168.1.2/24
+      nameservers:
+        addresses: [8.8.8.8, 8.8.4.4]
+      routes:
+        - to: default
+          via: 192.168.1.1 
+
+(Macchina con mininet)
+Configurare indirizzi ip VM-Mininet
+network:
+  version: 2
+  ethernets:
+    enp0s8:
+      addresses:
+        - 192.168.1.3/24
+      nameservers:
+        addresses: [8.8.8.8, 8.8.4.4]
+    enp0s9:
+      addresses:
+        - 192.168.1.4/24
+      nameservers:
+        addresses: [8.8.8.8, 8.8.4.4]
+      routes:
+        - to: default
+          via: 192.168.1.1 
+
+(Macchina con mininet) (Dentro mininet facendo xterm s1 e xterm s2)
+Configurare openVSwitch su s1 e s2
+sudo ovs-vsctl -- --id=@nf create netflow target="192.168.1.2:2055" active-timeout=60 -- -- set Bridge s1 netflow=@nf
+sudo ovs-vsctl -- --id=@nf create netflow target="192.168.1.2:2055" active-timeout=60 -- -- set Bridge s2 netflow=@nf
+
+(Macchina collettore)
+Accedere a ntopng con indirizzo di default 127.0.0.1:3000 oppure con quello che hai configurato tu
+
+      
