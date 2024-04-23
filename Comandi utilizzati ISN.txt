@@ -25,31 +25,33 @@ sudo apt-get install pfring-dkms nprobe ntopng n2disk cento
 
 (Macchina del collettore)
 Configurazione file nprobe.conf
-interfaccia: -i=enp0s9
-netflow collector: --zmq="tcp://127.0.0.1:5556"
-collector port: -3=2055
+-i=none
+-n=none
+--zmq="tcp://127.0.0.1:5556"
+--collector-port=2055
 --flow-version 9
+-T "@NTOPNG@"
 
 (Macchina del collettore) Opzionale
-Disabilitare avvio automatico nprobe
+Disabilitare avvio nprobe come daemon
 sudo systemctl disable nprobe
 
 (Macchina del collettore)
 Avvio nProbe e controllo stato
-sudo systemctl start nprobe (Collector)
+sudo systemctl start nprobe
 sudo systemctl status nprobe
 
 (Macchina del collettore)
 Configurazione ntopng.conf
---interface="tcp://127.0.0.1:5556"
+-i="tcp://127.0.0.1:5556"
 Avvio ntopng (Analyzer)
 sudo systemctl start ntopng
 
-(Macchina del collettore)
-Controllo su browser web a indirizzo http://127.0.0.1:3000
+Accedere a pagina web ntopng a indirizzo
+http://127.0.0.1:3000
 
 (Macchina collettore)
-Configurare indirizzo ip statico VM_monitoring (192.168.1.2)
+Configurare indirizzo ip statico inetrfaccia enp0s9 (192.168.1.2)
 network:
   version: 2
   ethernets:
@@ -63,7 +65,7 @@ network:
           via: 192.168.1.1 
 
 (Macchina con mininet)
-Configurare indirizzi ip VM-Mininet
+Configurare indirizzi ip VM-Mininet interfacce enp0s8 e enp0s9
 network:
   version: 2
   ethernets:
@@ -86,7 +88,5 @@ Configurare openVSwitch su s1 e s2
 sudo ovs-vsctl -- --id=@nf create netflow target="192.168.1.2:2055" active-timeout=60 -- -- set Bridge s1 netflow=@nf
 sudo ovs-vsctl -- --id=@nf create netflow target="192.168.1.2:2055" active-timeout=60 -- -- set Bridge s2 netflow=@nf
 
-(Macchina collettore)
-Accedere a ntopng con indirizzo di default 127.0.0.1:3000 oppure con quello che hai configurato tu
 
       
